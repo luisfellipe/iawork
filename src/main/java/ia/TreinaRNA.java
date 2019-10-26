@@ -1,5 +1,7 @@
 package ia;
 
+import dados.Input;
+
 /**
  *
  * @author luis
@@ -43,7 +45,7 @@ public class TreinaRNA {
             for (int i = 0; i < size; i++) {
                 y = rna.setInput(entrada[i].getInputs());
                 if (y != saida[i]) {
-                    rna.ajustar(entrada[i].getInputs(), saida[i], y);
+                    rna.backPropagation(entrada[i].getInputs(), saida[i], y);
                     erro = Math.pow((y - saida[i]), 2);
                 }
                 epoca++;

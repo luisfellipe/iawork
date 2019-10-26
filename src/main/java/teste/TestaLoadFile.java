@@ -1,6 +1,6 @@
 package teste;
 
-import db.LoadFile;
+import dados.LoadFile;
 
 /**
  *

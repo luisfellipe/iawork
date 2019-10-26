@@ -19,6 +19,9 @@ public class TestaVetor {
             System.out.println(W2[i]);
         }
         System.out.println(W.length);
+        
+        double i = 0.5;
+        if(i > 0.4) System.out.println("i é maior que 0.4");
         /*
         for (int i = 0; i < tam; i++) {
             W[i] = i+1 * 2.71828356;

@@ -1,4 +1,6 @@
-package ia;
+package dados;
+
+import ia.Function;
 
 /**
  *
@@ -6,12 +8,15 @@ package ia;
  */
 public class Input {
 
-    private double in[];
-    private int size;
+    private double in[] = null;
+    private int size = 0;
 
-    public Input(int size) {
-        in = new double[size];
-        size = 0;
+    public Input() {
+    }
+
+    public Input(double in[]) {
+        this.in = in.clone();
+        size = in.length;
     }
 
     public void setInput(double in, int pos) {
@@ -24,12 +29,12 @@ public class Input {
         if (pos <= size) {
             return in[pos];
         }
-        return 0.0001;
+        return 0.01;
     }
 
     public void setInputs(double in[]) {
         if (in.length < size) {
-            new Function().copy(in, in, size);
+            this.in = in.clone();
         }
     }
 
