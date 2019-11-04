@@ -7,7 +7,18 @@ package teste;
 public class TestaVetor {
 
     public static void main(String[] args) {
-        int tam = 5;
+
+        int[][] m = new int[5][5];
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 5; j++) {
+                m[i][j] = i * j + 1;
+            }
+        }
+        for (int i = 0; i < 5; i++) {
+            System.out.print("M: " + m[1][i] + " ");
+        }
+
+        /*int tam = 5;
         double[] W = new double[tam];
         W[0] = 2;
         W[1] = 2;
@@ -41,6 +52,5 @@ public class TestaVetor {
           for (int i = 0; i < tam; i++) {
             System.out.println(W2[i]);
         }*/
-
     }
 }

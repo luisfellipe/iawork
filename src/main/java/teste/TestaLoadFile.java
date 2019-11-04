@@ -1,5 +1,6 @@
 package teste;
 
+import dados.Input;
 import dados.LoadFile;
 
 /**
@@ -7,15 +8,16 @@ import dados.LoadFile;
  * @author luis
  */
 public class TestaLoadFile {
+
     public static void main(String[] args) {
         LoadFile lf = new LoadFile();
-        int table[][] = lf.load("db/mamog.data");
-        
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 4; j++) {
-                System.out.print(table[i][j]+" "); 
-           }
-            System.out.println("");
+        String path = "src/main/java/dados/desvio.data";
+        double[] normal = {5, 30, 3, 4, 8, 0}; //paramtros ? que faltam
+        Input[] in = lf.load(path, 961, 6, normal);
+
+        for (int i = 0; i < in.length; i++) {
+            System.out.println(in[i].toString() + "\t" + i);
         }
+
     }
 }
