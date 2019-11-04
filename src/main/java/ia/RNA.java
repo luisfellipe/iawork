@@ -40,58 +40,58 @@ public class RNA {
     }
 
     /**
-     * Algoritmo backpropagation pega o resultado na camada de saida e az o percurso inverso
-     * da classificação ajustando os pesos.
+     * Algoritmo backpropagation pega o resultado na camada de saida e az o
+     * percurso inverso da classificação ajustando os pesos.
+     *
      * @param Input entrada: tem os dados para classificar e tambem a resposta
-     * @amostra[saida]: possui a saida desejada, não faz parte do processo da rede
+     * @amostra[saida]: possui a saida desejada, não faz parte do processo da
+     * rede
      * @saida: posicao da saida desejada
      * @y: saida obtida na RNA
      * @amostra[]: amostra para classificação
      * @saida: saida esperada
      */
-    
     public void backPropagation(Input entrada) {
         double[] amostra = entrada.getInputs();
-        double saida = entrada.getSaida();
+        double saidaEsperada = entrada.getSaida();
         double[] W = null; // vetor de pesos
         /**
          * @gd: Gradiente Descendente
          * @y: saida do neuronio
-         * @gwSoma: soma do gd(j) x peso(j) dos neuronios da camada de saida
+         * 
          */
-        double gd = 0.0, y = 0.0, gwSoma = 0;
+        double gd, y = 0.0;
 
         //loop de iteração dos neuronios da camada de saida
         for (int i = 0; i < getqNeuronsOut(); i++) {
             W = layerOut[i].getPesos(); //pesos do neuronio i da camada de saida
             y = layerOut[i].getLastOutput(); //ultimo sinal do neuronio i da camada de saida
-            gd = y * (1 - y) * (saida - y); //calcula gradiente local de saida
+            gd = y * (1 - y) * (saidaEsperada - y); //calcula gradiente local de saida
+            layerOut[i].setGD(gd);
             //loop de iteração nos pesos do neuronio i
             for (int j = 0; j < qtdW; j++) {
                 W[j] = W[j] + txOfLearn * y * gd; //ajuste dos pesos dos neuronios
-                gwSoma += gd * W[j];
             }
         }
 
-        double W2[] = null, gwSoma2 = 0.0; //gwSoma2: gradiente da camada oculta
+        double W2[] = null;
         for (int i = getqLayers() - 2; i > 0; i++) {//itera sobre a camada
             for (int j = 0; j < getqNeuronsHidden(); j++) { // itera sobre os neuronios da camada
                 W2 = layerHidden[i][j].getPesos();
                 y = layerHidden[i][j].getLastOutput();
-                gd = y * (1 - y) * gwSoma;
+                gd = y * (1 - y) * layerOut[i].getGD() * layerOut[i].getPesos()[j];
+                layerHidden[i][j].setGD(gd);
                 for (int k = 1; k < qtdW; k++) {//itera sobre os pesos dos neuronios
                     W2[k] = W2[k] + (txOfLearn * y * gd); // calcula gradiente dos neuronios internos 
-                    gwSoma2 += gwSoma * W2[k];
                 }
                 W = W2.clone();
             }
-            gwSoma = gwSoma2;
         }
         for (int i = 0; i < getqNeuronsIn(); i++) {
             W = layerIn[i].getPesos();
             y = layerIn[i].getLastOutput();
-            gd = y * (1 - y) * gwSoma;
             for (int j = 1; j < qtdW; j++) {
+                gd = y * (1 - y) * layerHidden[0][i].getGD() * layerHidden[0][i].getPesos()[j];
                 W[j] = W[j] + (txOfLearn * y * gd);
             }
         }

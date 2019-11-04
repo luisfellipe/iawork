@@ -8,14 +8,12 @@ import java.util.Random;
  */
 public class Neuronio {
 
-    /*
-     * qtdPesos: 
-     * bias:
-     * lastOutput: ultima saida de ativação do neuronio
-     * pesos: 
+    /**
+     * qtdPesos: bias: lastOutput: ultima saida de ativação do neuronio pesos:
+     * gd: gradiente descendente
      */
     private int qtdPesos;
-    private double bias = 1, lastOutput = 0, beta = 1;
+    private double bias = 1, lastOutput = 0, beta = 1, gd;
     private double[] pesos;
 
     public Neuronio(int qtdPesos) {
@@ -84,6 +82,18 @@ public class Neuronio {
         this.bias = bias;
     }
 
+    public double getLastOutput() {
+        return lastOutput;
+    }
+
+    public void setGD(double gd) {
+        this.gd = gd;
+    }
+
+    public double getGD() {
+        return gd;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -94,9 +104,4 @@ public class Neuronio {
         }
         return sb.toString();
     }
-
-    public double getLastOutput() {
-        return lastOutput;
-    }
-
 }
