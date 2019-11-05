@@ -9,6 +9,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -19,34 +21,34 @@ import java.util.logging.Logger;
  */
 public class LoadFile {
 
-    public Input[] load(String inputPath, int qtdData, int qtdAmostras, double normal[]) {
+    public List<Input> load(String inputPath, int qtdData, int qtdAmostras) {
+
+        double[] normal = {2, 30, 4, 1, 3};
         FileReader in = null;
         double[] dados = new double[qtdAmostras];
-        Input input[] = new Input[qtdData];
+        Input input;
+        ArrayList<Input> lista = new ArrayList();
         try {
             File file = new File(inputPath);
             in = new FileReader(file);
             BufferedReader br = new BufferedReader(in);
-
             String linha = br.readLine();
             String data[] = null;
             int x = 0;
             while (linha != null) {
                 data = linha.split(",");
                 for (int i = 0; i < qtdAmostras; i++) {
-
-                    /*
+                    /**
                      * quando dados estão incompletos
                      */
                     if (data[i].equals("?")) {
                         dados[i] = normal[i];
-
                     } else {
                         dados[i] = Double.parseDouble(data[i]);
                     }
-                    input[x] = new Input(dados);
+                    input = new Input(dados);
+                    lista.add(input);
                 }
-
                 linha = br.readLine();
                 x++;
             }
@@ -65,7 +67,7 @@ public class LoadFile {
             }
         }
 
-        return input;
+        return lista;
     }
 
     public void saveWeigths(RNA rna, String path) {

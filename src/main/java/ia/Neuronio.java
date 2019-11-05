@@ -4,7 +4,7 @@ import java.util.Random;
 
 /**
  *
- * @author luis
+ * @author luis felipe
  */
 public class Neuronio {
 

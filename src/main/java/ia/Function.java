@@ -2,7 +2,7 @@ package ia;
 
 /**
  *
- * @author luis
+ * @author luis felipe
  */
 public class Function {
 
@@ -14,8 +14,8 @@ public class Function {
     }
 
     /**
-     * Derivada da funcao de ativacao utilizada nos neuronios internos
-     * para calculo do gradiente descendente
+     * Derivada da funcao de ativacao utilizada nos neuronios internos para
+     * calculo do gradiente descendente
      */
     public double activationD(double u) {
         u = u * (1 - u);
@@ -29,4 +29,5 @@ public class Function {
         this.beta = beta;
         return this;
     }
+
 }

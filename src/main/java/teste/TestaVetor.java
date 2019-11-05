@@ -8,7 +8,10 @@ public class TestaVetor {
 
     public static void main(String[] args) {
 
-        int[][] m = new int[5][5];
+        int[] n = {1, 1, 2, 3, 5, 4, 6};
+        System.out.println("N: " + n.length);
+
+        /*  int[][] m = new int[5][5];
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 5; j++) {
                 m[i][j] = i * j + 1;

@@ -3,6 +3,7 @@ package teste;
 import dados.Input;
 import dados.LoadFile;
 import ia.RNA;
+import java.util.List;
 //import ia.TreinaRNA;
 
 /**
@@ -23,8 +24,8 @@ public class TestRNA {
 
         LoadFile lf = new LoadFile();
         String path = "src/main/java/dados/amostras.data";
-        double[] normal = {1, 3, 5, 6, 6, 3}; //paramtros ? que faltam
-        Input[] amostra = lf.load(path, 399, 6, normal);
+       
+        List<Input> amostra = lf.load(path, 399, 6);
       
      
     }

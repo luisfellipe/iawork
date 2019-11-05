@@ -12,6 +12,7 @@ public class RNA {
     private Neuronio[][] layerHidden;
     private int qNeuronsIn, qNeuronsOut, qNeuronsHidden, qLayers, qtdW;
     private double txOfLearn;
+    private boolean isLayerHidden = false;
 
     public RNA(int qLayers, int qNeuronsIn, int qNeuronsOut, int qNeuronsHidden,
             int qtdW, double txOfLearn) {
@@ -25,14 +26,17 @@ public class RNA {
         layerIn = new Neuronio[qNeuronsIn];
         layerOut = new Neuronio[qNeuronsOut];
         //qtdCamadas - 2: subtrai duas camadas levando em conta a camada de input e de output
-        layerHidden = new Neuronio[qLayers - 2][qNeuronsHidden];
         for (int i = 0; i < qNeuronsIn; i++) {
             layerIn[i] = new Neuronio(qtdW);
         }
-        for (int i = 0; i < qLayers - 2; i++) {
-            for (int j = 0; j < qNeuronsHidden; j++) {
-                layerHidden[i][j] = new Neuronio(qNeuronsHidden);
+        if ((qLayers - 2) > 0) {
+            layerHidden = new Neuronio[qLayers - 2][qNeuronsHidden];
+            for (int i = 0; i < qLayers - 2; i++) {
+                for (int j = 0; j < qNeuronsHidden; j++) {
+                    layerHidden[i][j] = new Neuronio(qNeuronsHidden);
+                }
             }
+            isLayerHidden = true;
         }
         for (int i = 0; i < qNeuronsOut; i++) {
             layerOut[i] = new Neuronio(qNeuronsHidden);
@@ -58,33 +62,36 @@ public class RNA {
         /**
          * @gd: Gradiente Descendente
          * @y: saida do neuronio
-         * 
+         *
          */
-        double gd, y = 0.0;
+        double gd = 0, y = 0.0, gdSoma = 0.0, gdHidden = 0.0;
 
         //loop de iteração dos neuronios da camada de saida
-        for (int i = 0; i < getqNeuronsOut(); i++) {
-            W = layerOut[i].getPesos(); //pesos do neuronio i da camada de saida
-            y = layerOut[i].getLastOutput(); //ultimo sinal do neuronio i da camada de saida
+        for (int n = 0; n < getqNeuronsOut(); n++) {
+            W = layerOut[n].getPesos(); //pesos do neuronio i da camada de saida
+            y = layerOut[n].getLastOutput(); //ultimo sinal do neuronio i da camada de saida
             gd = y * (1 - y) * (saidaEsperada - y); //calcula gradiente local de saida
-            layerOut[i].setGD(gd);
+            layerOut[n].setGD(gd);
             //loop de iteração nos pesos do neuronio i
-            for (int j = 0; j < qtdW; j++) {
-                W[j] = W[j] + txOfLearn * y * gd; //ajuste dos pesos dos neuronios
+            for (int nw = 0; nw < qtdW; nw++) {
+                W[nw] = W[nw] + (txOfLearn * y * gd); //ajuste dos pesos dos neuronios
+                gdSoma = gd * W[nw];
             }
         }
 
         double W2[] = null;
-        for (int i = getqLayers() - 2; i > 0; i++) {//itera sobre a camada
-            for (int j = 0; j < getqNeuronsHidden(); j++) { // itera sobre os neuronios da camada
-                W2 = layerHidden[i][j].getPesos();
-                y = layerHidden[i][j].getLastOutput();
-                gd = y * (1 - y) * layerOut[i].getGD() * layerOut[i].getPesos()[j];
-                layerHidden[i][j].setGD(gd);
-                for (int k = 1; k < qtdW; k++) {//itera sobre os pesos dos neuronios
-                    W2[k] = W2[k] + (txOfLearn * y * gd); // calcula gradiente dos neuronios internos 
+        if (isLayerHidden) {
+            for (int i = getqLayers() - 2; i < 0; i++) {//itera sobre a camada
+                for (int j = 0; j < getqNeuronsHidden(); j++) { // itera sobre os neuronios da camada
+                    W2 = layerHidden[i][j].getPesos();
+                    y = layerHidden[i][j].getLastOutput();
+                    gd = y * (1 - y) * gdSoma;
+                    for (int k = 1; k < qtdW; k++) {//itera sobre os pesos dos neuronios
+                        W2[k] = W2[k] + (txOfLearn * y * gd); // calcula gradiente dos neuronios internos 
+                        gdHidden = gdHidden;
+                    }
+                    W = W2.clone();
                 }
-                W = W2.clone();
             }
         }
         for (int i = 0; i < getqNeuronsIn(); i++) {
@@ -104,15 +111,17 @@ public class RNA {
             W[i] = layerIn[i].sinal(entrada);
         }
         double[] W2 = new double[getqNeuronsHidden()];
-        //qtdCamadas - 2: descontado as camadas de entrada e saida
-        for (int i = 0; i < getqLayers() - 2; i++) {
-            for (int j = 0; j < getqNeuronsHidden(); j++) {
-                W2[j] = layerHidden[i][j].sinal(W);
+        if (isLayerHidden) {
+            //qtdCamadas - 2: descontado as camadas de entrada e saida
+            for (int i = 0; i < getqLayers() - 2; i++) {
+                for (int j = 0; j < getqNeuronsHidden(); j++) {
+                    W2[j] = layerHidden[i][j].sinal(W);
+                }
+                if (W.length < W2.length) {
+                    W = new double[getqNeuronsHidden()];
+                }
+                W = W2.clone();
             }
-            if (W.length < W2.length) {
-                W = new double[getqNeuronsHidden()];
-            }
-            W = W2.clone();
         }
         double u[] = new double[getqNeuronsOut()];
         for (int i = 0; i < getqNeuronsOut(); i++) {

@@ -1,11 +1,12 @@
 package ia;
 
 import dados.Input;
+import java.util.List;
 import java.util.Random;
 
 /**
  *
- * @author luis
+ * @author luis felipe
  */
 public class TreinaRNA {
 
@@ -15,30 +16,32 @@ public class TreinaRNA {
      * @entradaSize: tamanho de cada amostra
      * @amostraSize:quantidade de dados de cada amostra
      * @erro: margem de erro na classificação da amostra
-     * @serro: desvio padrão
+     * @minErro: erro minimo de aceitação da RNA
      * @rna: rede neural artificial
      * @epoca: iterador
+     * @rodadas: quantidade de uma unica amostra servira de input para uma RNA
+     * ajustar seus pesos com backpropagation
      */
     private int epoca, entradaSize, amostraSize, maxEpoca = 1000;
-    private double erro, maxErro;
+    private double erro, minErro, rodadas;
     RNA rna = null;
-    private Input[] entrada;
+    private List<Input> amostra;
 
     public void setRNA(RNA rna) {
         this.rna = rna;
     }
 
-    public void setMaxErro(double maxErro) {
-        this.maxErro = maxErro;
+    public void setMinErro(double minErro) {
+        this.minErro = minErro;
     }
 
     /**
      * recebe os dados para treino da rna
      */
-    public void setData(Input[] entrada, int entradaSize, int amostraSize) {
-        this.entrada = entrada;
-        this.amostraSize = amostraSize;
-        this.entradaSize = entradaSize;
+    public void setData(List<Input> entrada) {
+        this.amostra = entrada;
+        this.amostraSize = entrada.get(0).getSizeData();
+        this.entradaSize = entrada.size();
     }
 
     public void treinar() {
@@ -48,20 +51,25 @@ public class TreinaRNA {
             epoca = 0;
             for (int i = 0; i < amostraSize; i++) {
                 int r = new Random().nextInt() * entradaSize; // escolhe indice de uma amostra aleatoria
-                y = rna.setInput(entrada[r].getInputs()); // rna processa amostra
+                y = rna.setInput(amostra.get(r).getInputs()); // rna processa amostra
                 /**
                  * se resultado diferente do esperado executa algoritmo de
                  * retropropagacao e calcula o erro
-                 * 
+                 *
                  */
-                if (y != entrada[i].getSaida()) {
-                    rna.backPropagation(entrada[i]);
-                    erro += Math.pow((y - entrada[i].getSaida()), 2);
+                if (y != amostra.get(r).getSaida()) {
+                    rna.backPropagation(amostra.get(r));
+                    erro += Math.pow((y - amostra.get(r).getSaida()), 2);
                 }
                 epoca++;
             }
             erro = erro / entradaSize;
-        } while (erro <= maxErro || epoca < maxEpoca);
+            if (erro > minErro && epoca == maxEpoca) {
+                System.err.println("RNA não atingiu parametros de treino exigidos");
+            }
+            erro = erro/ amostra.size();
+            
+        } while (erro <= minErro || epoca < maxEpoca);
 
     }
 
@@ -69,4 +77,7 @@ public class TreinaRNA {
         this.maxEpoca = maxEpoca;
     }
 
+    public void setRodadas(double rod) {
+        this.rodadas = rod;
+    }
 }
