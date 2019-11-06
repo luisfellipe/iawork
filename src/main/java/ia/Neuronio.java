@@ -9,26 +9,18 @@ import java.util.Random;
 public class Neuronio {
 
     /**
-     * qtdPesos: bias: lastOutput: ultima saida de ativação do neuronio pesos:
+     * qtdPesos: bias: potencial: ultima saida de ativação do neuronio pesos:
      * gd: gradiente descendente
      */
     private int qtdPesos;
-    private double bias = 1, lastOutput = 0, beta = 1, gd = 0.0;
+    private double bias = 1, potencial = 0, beta = 1, gd = 0.0;
     private double[] pesos;
 
     public Neuronio(int qtdPesos) {
         this.qtdPesos = qtdPesos + 1;//mais um por causa do bias pesos[0]
         pesos = new double[this.qtdPesos];
         for (int x = 0; x < this.qtdPesos; x++) {
-            pesos[x] = new Random().nextDouble();
-        }
-    }
-
-    public Neuronio(int qtdPesos, double pesoInicial) {
-        this.qtdPesos = qtdPesos + 1;;//mais um por causa do bias pesos[0]
-        pesos = new double[qtdPesos];
-        for (int x = 0; x < this.qtdPesos; x++) {
-            pesos[x] = pesoInicial;
+            pesos[x] = new Random().nextDouble() / 100;
         }
     }
 
@@ -39,12 +31,12 @@ public class Neuronio {
      */
     public double sinal(double entrada[]) {
         double u = 0;
-        for (int i = 1; i < this.qtdPesos; i++) {
-            u += pesos[i] * entrada[i];
+        for (int i = 1; i < qtdPesos; i++) {
+            u += pesos[i] * entrada[i - 1];
         }
         u = u - (pesos[0] * bias);
-        lastOutput = new Function().setBeta(beta).activation(u);
-        return lastOutput;
+        potencial = new Function().setBeta(beta).activation(u);
+        return potencial;
     }
 
     /**
@@ -72,7 +64,7 @@ public class Neuronio {
      * @return the qtdPesos
      */
     public int getQtdPesos() {
-        return qtdPesos - 1;
+        return qtdPesos;
     }
 
     /**
@@ -83,7 +75,7 @@ public class Neuronio {
     }
 
     public double getLastOutput() {
-        return lastOutput;
+        return potencial;
     }
 
     public void setGD(double gd) {
@@ -97,9 +89,9 @@ public class Neuronio {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("biases: ").append(pesos[0] * bias).append("\t");
+        sb.append("bias: ").append(pesos[0] * bias).append("\t\t");
         for (int x = 1; x < this.qtdPesos; x++) {
-            sb.append("w[").append(pesos[x]).append("]\t");
+            sb.append("w[").append(pesos[x]).append("]\t\t");
 
         }
         return sb.toString();

@@ -16,8 +16,7 @@ public class Input {
     public Input(double in[]) {
         this.in = in.clone();
         sizeData = in.length - 1;
-        saida = in[sizeData];
-        sizeData = sizeData - 1;
+        saida = in[sizeData]; //extrai o ultimo parametro como saida desejada
         /*
          remove o dado de classificacao da amostra 
          considera que essa dado esta no ultimo endereco do vetor
@@ -31,7 +30,7 @@ public class Input {
     }
 
     public Input(double in[], int posSaida) {
-        sizeData = in.length - 2;
+        sizeData = in.length ;
         this.in = new double[sizeData];
         saida = in[posSaida];
 
@@ -59,19 +58,6 @@ public class Input {
         return -0.01;
     }
 
-    public void setInputs(double in[]) {
-        this.in = in.clone();
-        sizeData = in.length - 2;
-        saida = in[sizeData + 1];
-
-        double[] swp = new double[sizeData];
-        for (int i = 0; i < sizeData; i++) {
-            swp[i] = in[i];
-        }
-        in = swp;
-        normalizar();
-    }
-
     public double[] getInputs() {
         return in;
     }
@@ -81,24 +67,16 @@ public class Input {
     }
 
     public double getSaida() {
-        return in[sizeData];
+        return saida;
     }
 
     public int getSizeData() {
-        return in.length - 1;
-    }
-
-    private void normalizar_2() {
-        int[] Xmin = {0, 18, 1, 1, 1}, Xmax = {6, 98, 4, 5, 4};
-        int d1 = 0, d2 = 1;
-        for (int i = 0; i < in.length - 1; i++) {
-            in[i] = ((((in[i] - Xmin[i]) * (d2 - d1)) / (Xmax[i] - Xmin[i])) + d1);
-        }
+        return in.length;
     }
 
     private void normalizar() {
         int[] Xmax = {6, 98, 4, 5, 4};
-        for (int i = 0; i < in.length - 1; i++) {
+        for (int i = 0; i < sizeData; i++) {
             in[i] = in[i] / Xmax[i];
         }
     }
@@ -107,8 +85,8 @@ public class Input {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         int i;
-        for (i = 0; i < sizeData; i++) {
-            sb.append(in[i]).append("\t\t");
+        for (i = 0; i < sizeData-1; i++) {
+            sb.append(in[i]).append("\t");
         }
         sb.append(in[i]).append("\t\tSaida: ").append(saida);
         return sb.toString();

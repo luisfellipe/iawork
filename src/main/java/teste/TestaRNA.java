@@ -10,24 +10,25 @@ import java.util.List;
  *
  * @author luis
  */
-public class TestRNA {
+public class TestaRNA {
 
     public static void main(String[] args) {
-        int qtdNeuroIn = 2,
+        int qtdNeuroIn = 3,
                 qtdNeuroOut = 1,
-                qtdNeuroHidden = 2,
                 qtdCamadas = 3,
                 qtdPesos = 3;
         double taxa = 0.1;
-        RNA rna = new RNA(qtdCamadas, qtdNeuroIn, qtdNeuroOut, qtdNeuroHidden, qtdPesos, taxa);
+        RNA rna = new RNA(qtdCamadas, qtdNeuroIn, qtdNeuroOut, qtdPesos, taxa);
         rna.printNet();
 
         LoadFile lf = new LoadFile();
         String path = "src/main/java/dados/amostras.data";
-       
-        List<Input> amostra = lf.load(path, 399, 6);
-      
-     
+
+        List<Input> amostras = lf.load(path, 288);
+        for (Input input : amostras) {
+            rna.setInput(input.getInputs());
+        }
+
     }
 
 }

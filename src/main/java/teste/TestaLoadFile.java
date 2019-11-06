@@ -15,9 +15,9 @@ public class TestaLoadFile {
         String path2 = "src/main/java/dados/mamog.data";
         
         LoadFile ld = new LoadFile();
-        List<Input> in = ld.load(path2, 961, 6);
+        List<Input> in = ld.load(path2, 961);
         for (int i = 0; i < 961; i++) {
-            System.out.println(in.get(i).toString() + " i: " + i);
+            System.out.println(in.get(i).toString() + "\ti: " + i);
         }
         
     }

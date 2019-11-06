@@ -8,8 +8,10 @@ public class TestaVetor {
 
     public static void main(String[] args) {
 
-        int[] n = {1, 1, 2, 3, 5, 4, 6};
-        System.out.println("N: " + n.length);
+        int[] n1 = {1, 1, 2, 3, 5, 4, 6},n2;
+        System.out.println("N1: " + n1.length);
+        n2 = n1.clone();
+        System.out.println("N2: " + n2.length);
 
         /*  int[][] m = new int[5][5];
         for (int i = 0; i < 5; i++) {

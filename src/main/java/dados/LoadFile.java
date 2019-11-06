@@ -20,28 +20,30 @@ import java.util.logging.Logger;
  *
  */
 public class LoadFile {
-    
-    public List<Input> load(String inputPath, int qtdData, int qtdAmostras) {
+
+    public List<Input> load(String inputPath, int qtdAmostras) {
         ArrayList<Input> lista = null;
         try {
-            
+
             FileReader in = null;
             lista = new ArrayList();
             File file = new File(inputPath);
             in = new FileReader(file);
             BufferedReader br = new BufferedReader(in);
-            
+
             String linha;
             linha = br.readLine();
             double[] dados = null;
             String data[] = null;
             double var = 0;
             Input input;
-            
             while (linha != null) {
-                dados = new double[qtdAmostras];
+
                 data = linha.split(",");
-                for (int i = 0; i < qtdAmostras; i++) {
+                
+                dados = new double[6];
+                
+                for (int i = 0; i < 6; i++) {
                     /**
                      * quando dados estão incompletos
                      */
@@ -55,7 +57,7 @@ public class LoadFile {
                                     var = 2;
                                 }
                                 break;
-                            
+
                             case 1:
                                 var = 18;
                                 if (Double.parseDouble(data[5]) == 1) {
@@ -136,7 +138,7 @@ public class LoadFile {
                                     if (Double.parseDouble(data[0]) > 4) {
                                         var = var - 1;
                                     }
-                                    
+
                                 } else if (!data[1].equals("?")) {
                                     if (Double.parseDouble(data[1]) > 45) {
                                         var = var - 1;
@@ -150,7 +152,7 @@ public class LoadFile {
                                         var = var - 1;
                                     }
                                 }
-                                
+
                                 if (var < 1) {
                                     var = 1;
                                 }
@@ -163,12 +165,13 @@ public class LoadFile {
                         dados[i] = Double.parseDouble(data[i]);
                     }
                 }// fim do for
+
                 input = new Input(dados.clone());
                 lista.add(input);
                 linha = br.readLine();
             }// fim do while
             br.close();
-            
+
         } catch (FileNotFoundException ex) {
             Logger.getLogger(LoadFile.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
@@ -176,9 +179,9 @@ public class LoadFile {
         }
         return lista;
     }
-    
+
     public void saveWeigths(RNA rna, String path) {
-        
+
         try {
             File file = new File(path);
             FileWriter fw = new FileWriter(file);
@@ -187,9 +190,8 @@ public class LoadFile {
             /////////////////////////////////////////////////////////////////
             for (List<Neuronio> layer : rna.getLayers()) {
                 for (Neuronio neuronio : layer) {
-                    sb.append("W[");
                     for (double w : neuronio.getPesos()) {
-                        sb.append(w).append("]\t");
+                        sb.append("W[").append(w).append("]\t\t");
                     }
                     sb.append("\n");
                 }
@@ -197,12 +199,12 @@ public class LoadFile {
             ///////////////////////////////////////////////////////////////
             bw.write(sb.toString());
             bw.close();
-            
+
         } catch (IOException ex) {
             Logger.getLogger(LoadFile.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     public void showWeights(String path) {
         FileReader in = null;
         try {
@@ -221,23 +223,23 @@ public class LoadFile {
             br.close();
             ///printa pesos na tela
             System.out.println(sb.toString());
-            
+
         } catch (FileNotFoundException ex) {
             Logger.getLogger(LoadFile.class
                     .getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger(LoadFile.class
                     .getName()).log(Level.SEVERE, null, ex);
-            
+
         } finally {
             try {
                 in.close();
-                
+
             } catch (IOException ex) {
                 Logger.getLogger(LoadFile.class
                         .getName()).log(Level.SEVERE, null, ex);
             }
         }
-        
+
     }
 }

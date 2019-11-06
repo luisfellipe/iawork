@@ -7,7 +7,7 @@ import java.util.Scanner;
  *
  * @author luis
  */
-public class TesteFunction {
+public class TestaFunction {
     public static void main(String[] args) {
         Function f = new Function();
         boolean continua = true;
