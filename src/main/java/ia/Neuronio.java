@@ -13,7 +13,7 @@ public class Neuronio {
      * gd: gradiente descendente
      */
     private int qtdPesos;
-    private double bias = 1, lastOutput = 0, beta = 1, gd;
+    private double bias = 1, lastOutput = 0, beta = 1, gd = 0.0;
     private double[] pesos;
 
     public Neuronio(int qtdPesos) {

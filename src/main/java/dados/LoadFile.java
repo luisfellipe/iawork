@@ -20,120 +20,189 @@ import java.util.logging.Logger;
  *
  */
 public class LoadFile {
-
+    
     public List<Input> load(String inputPath, int qtdData, int qtdAmostras) {
-
-        double[] normal = {2, 30, 4, 1, 3};
-        FileReader in = null;
-        double[] dados = new double[qtdAmostras];
-        Input input;
-        ArrayList<Input> lista = new ArrayList();
+        ArrayList<Input> lista = null;
         try {
+            
+            FileReader in = null;
+            lista = new ArrayList();
             File file = new File(inputPath);
             in = new FileReader(file);
             BufferedReader br = new BufferedReader(in);
-            String linha = br.readLine();
+            
+            String linha;
+            linha = br.readLine();
+            double[] dados = null;
             String data[] = null;
-            int x = 0;
+            double var = 0;
+            Input input;
+            
             while (linha != null) {
+                dados = new double[qtdAmostras];
                 data = linha.split(",");
                 for (int i = 0; i < qtdAmostras; i++) {
                     /**
                      * quando dados estão incompletos
                      */
                     if (data[i].equals("?")) {
-                        dados[i] = normal[i];
-                    } else {
+                        var = 0;
+                        switch (i) {
+                            case 0:
+                                if (Double.parseDouble(data[5]) == 1) {
+                                    var = 6;
+                                } else {
+                                    var = 2;
+                                }
+                                break;
+                            
+                            case 1:
+                                var = 18;
+                                if (Double.parseDouble(data[5]) == 1) {
+                                    var = var * 1.8;
+                                } else if (!data[0].equals("?")) {
+                                    if (Double.parseDouble(data[0]) < 3) {
+                                        var = var * 1.2;
+                                    } else {
+                                        var = var * 1.3;
+                                    }
+                                } else if (!data[0].equals("?")) {
+                                    if (Double.parseDouble(data[0]) > 3) {
+                                        var = var * 1.4;
+                                    }
+                                } else if (!data[2].equals("?")) {
+                                    if (Double.parseDouble(data[2]) > 2) {
+                                        var = var * 1.2;
+                                    }
+                                } else if (!data[3].equals("?")) {
+                                    if (Double.parseDouble(data[3]) > 2) {
+                                        var = var * 1.3;
+                                    }
+                                } else if (!data[4].equals("?")) {
+                                    if (Double.parseDouble(data[4]) < 3) {
+                                        var = var * 1.3;
+                                    }
+                                }
+                                break;
+                            case 2:
+                                var = 0;
+                                if (Double.parseDouble(data[5]) == 1) {
+                                    var = 1;
+                                } else if (!data[0].equals("?")) {
+                                    if (Double.parseDouble(data[0]) > 3) {
+                                        var = var + 1;
+                                    }
+                                } else if (!data[3].equals("?")) {
+                                    if (Double.parseDouble(data[2]) > 3) {
+                                        var = var + 1;
+                                    }
+                                } else if (!data[4].equals("?")) {
+                                    if (Double.parseDouble(data[2]) < 3) {
+                                        var = var + 1;
+                                    }
+                                } else if (Double.parseDouble(data[1]) > 35) {
+                                    if (var < 4) {
+                                        var = var + 1;
+                                    }
+                                }
+                                break;
+                            case 3:
+                                var = 0;
+                                if (Double.parseDouble(data[5]) == 1) {
+                                    var = 1;
+                                } else if (!data[0].equals("?")) {
+                                    if (Double.parseDouble(data[0]) > 3) {
+                                        var = var + 1;
+                                    }
+                                } else if (!data[1].equals("?")) {
+                                    if (Double.parseDouble(data[1]) > 3) {
+                                        var = var + 1;
+                                    }
+                                } else if (!data[2].equals("?")) {
+                                    if (Double.parseDouble(data[2]) > 3) {
+                                        var = var + 1;
+                                    }
+                                } else if (!data[4].equals("?")) {
+                                    if (Double.parseDouble(data[4]) > 3) {
+                                        var = var + 1;
+                                    }
+                                }
+                                break;
+                            case 4:
+                                var = 5;
+                                if (Double.parseDouble(data[5]) == 1) {
+                                    var = var - 1;
+                                } else if (!data[0].equals("?")) {
+                                    if (Double.parseDouble(data[0]) > 4) {
+                                        var = var - 1;
+                                    }
+                                    
+                                } else if (!data[1].equals("?")) {
+                                    if (Double.parseDouble(data[1]) > 45) {
+                                        var = var - 1;
+                                    }
+                                } else if (!data[2].equals("?")) {
+                                    if (Double.parseDouble(data[2]) >= 3) {
+                                        var = var - 1;
+                                    }
+                                } else if (!data[3].equals("?")) {
+                                    if (Double.parseDouble(data[3]) >= 3) {
+                                        var = var - 1;
+                                    }
+                                }
+                                
+                                if (var < 1) {
+                                    var = 1;
+                                }
+                                break;
+                        }
+                        dados[i] = var;
+                        var = 0;
+                    }// fim do tratamento
+                    else {//se dados completos passa para double
                         dados[i] = Double.parseDouble(data[i]);
                     }
-                    input = new Input(dados);
-                    lista.add(input);
-                }
+                }// fim do for
+                input = new Input(dados.clone());
+                lista.add(input);
                 linha = br.readLine();
-                x++;
-            }
+            }// fim do while
             br.close();
+            
         } catch (FileNotFoundException ex) {
             Logger.getLogger(LoadFile.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger(LoadFile.class.getName()).log(Level.SEVERE, null, ex);
-
-        } finally {
-            try {
-                in.close();
-
-            } catch (IOException ex) {
-                Logger.getLogger(LoadFile.class.getName()).log(Level.SEVERE, null, ex);
-            }
         }
-
         return lista;
     }
-
+    
     public void saveWeigths(RNA rna, String path) {
-
-        FileWriter fw = null;
+        
         try {
             File file = new File(path);
-            fw = new FileWriter(file);
+            FileWriter fw = new FileWriter(file);
             BufferedWriter bw = new BufferedWriter(fw);
-            int i, j;
-            while (true) {
-                Neuronio[] n;
-                StringBuilder sb = new StringBuilder();
-                n = rna.getLayerInput();
-                int qW = n[0].getQtdPesos();
-                double[] W = null;
-                for (i = 0; i < n.length - 1; i++) {
-                    W = n[i].getPesos();
-                    for (j = 0; j < qW - 1; j++) {
-                        sb.append(W[j]).append(",");
+            StringBuilder sb = new StringBuilder();
+            /////////////////////////////////////////////////////////////////
+            for (List<Neuronio> layer : rna.getLayers()) {
+                for (Neuronio neuronio : layer) {
+                    sb.append("W[");
+                    for (double w : neuronio.getPesos()) {
+                        sb.append(w).append("]\t");
                     }
-                    sb.append(W[j]);
-                    bw.write(sb.toString());
-                    sb = null;
+                    sb.append("\n");
                 }
-                int k;// itera sobre os pesos de cada neuronio
-                Neuronio[][] m = rna.getLayerHidden();
-                for (i = 0; i < rna.getLayerHidden().length; i++) {
-                    for (j = 0; j < rna.getqNeuronsHidden(); j++) {
-                        W = m[i][j].getPesos();
-                        for (k = 0; k < qW; k++) {
-                            sb.append(W[k]).append(",");
-                        }
-                        sb.append(W[k]);
-                        bw.write(sb.toString());
-                        sb = null;
-                    }
-
-                }
-
-                n = rna.getLayerOutput();
-                qW = n[0].getQtdPesos();
-                for (i = 0; i < n.length - 1; i++) {
-                    W = n[i].getPesos();
-                    for (j = 0; j < qW - 1; j++) {
-                        sb.append(W[j]).append(",");
-                    }
-                    sb.append(W[j]);
-                    bw.write(sb.toString());
-                    sb = null;
-                }
-                bw.close();
             }
-
+            ///////////////////////////////////////////////////////////////
+            bw.write(sb.toString());
+            bw.close();
+            
         } catch (IOException ex) {
             Logger.getLogger(LoadFile.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            try {
-                fw.close();
-            } catch (IOException ex) {
-                Logger.getLogger(LoadFile.class.getName()).log(Level.SEVERE, null, ex);
-            }
         }
-
     }
-
+    
     public void showWeights(String path) {
         FileReader in = null;
         try {
@@ -141,24 +210,34 @@ public class LoadFile {
             in = new FileReader(file);
             BufferedReader br = new BufferedReader(in);
             String linha = br.readLine();
+            StringBuilder sb = new StringBuilder();
+            ///////////////////////////////////////////////////
             while (linha != null) {
+                sb.append(linha).append("\n");
                 System.out.println(linha);
                 linha = br.readLine();
             }
+            ////////////////////////////////////
             br.close();
+            ///printa pesos na tela
+            System.out.println(sb.toString());
+            
         } catch (FileNotFoundException ex) {
-            Logger.getLogger(LoadFile.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(LoadFile.class
+                    .getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
-            Logger.getLogger(LoadFile.class.getName()).log(Level.SEVERE, null, ex);
-
+            Logger.getLogger(LoadFile.class
+                    .getName()).log(Level.SEVERE, null, ex);
+            
         } finally {
             try {
                 in.close();
-
+                
             } catch (IOException ex) {
-                Logger.getLogger(LoadFile.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(LoadFile.class
+                        .getName()).log(Level.SEVERE, null, ex);
             }
         }
-
+        
     }
 }

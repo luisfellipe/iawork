@@ -88,11 +88,18 @@ public class Input {
         return in.length - 1;
     }
 
-    private void normalizar() {
-        int[] Xmin = {1, 19, 1, 1, 4}, Xmax = {5, 87, 4, 5, 1};
+    private void normalizar_2() {
+        int[] Xmin = {0, 18, 1, 1, 1}, Xmax = {6, 98, 4, 5, 4};
         int d1 = 0, d2 = 1;
         for (int i = 0; i < in.length - 1; i++) {
-                in[i] = ((((in[i] - Xmin[i]) * (d2 - d1)) / (Xmax[i] - Xmin[i])) + d1); 
+            in[i] = ((((in[i] - Xmin[i]) * (d2 - d1)) / (Xmax[i] - Xmin[i])) + d1);
+        }
+    }
+
+    private void normalizar() {
+        int[] Xmax = {6, 98, 4, 5, 4};
+        for (int i = 0; i < in.length - 1; i++) {
+            in[i] = in[i] / Xmax[i];
         }
     }
 

@@ -5,6 +5,7 @@ import dados.LoadFile;
 import ia.RNA;
 import ia.TreinaRNA;
 import java.util.List;
+import java.util.Locale;
 import java.util.Scanner;
 
 /**
@@ -23,19 +24,22 @@ public class Menu {
         System.out.println(":::::::::::: Criar RNA :::::::::::::");
         int qLayers, qNeuronsIn, qNeuronsOut, qNeuronsHidden, qtdW;
         double txOfLearn = 0;
-        System.out.println("Quantidade de camadas ocultas se tiver: ");
+        System.out.println("Quantidade de camadas: ");
         qLayers = leitor.nextInt();
-        System.out.println("Quantidade de neurônios da camada oculta: ");
-        qNeuronsHidden = leitor.nextInt();
         System.out.println("Quantidade de neurônios da camada de entrada: ");
         qNeuronsIn = leitor.nextInt();
-        System.out.println("Quantidade de neurônios da camada de output: ");
+        System.out.println("Quantidade de neurônios da camada de saida: ");
         qNeuronsOut = leitor.nextInt();
         System.out.println("Quantidade de pesos: ");
         qtdW = leitor.nextInt();
-        System.out.println("Taxa de aprendizagem: ");
-        txOfLearn = leitor.nextDouble();
-        return new RNA(qLayers, qNeuronsIn, qNeuronsOut, qNeuronsHidden, qtdW, txOfLearn);
+        System.out.println("Taxa de aprendizagem(0-100): ");
+        txOfLearn = (leitor.nextInt()) / 100;
+
+        qNeuronsHidden = qLayers - 2;
+
+        RNA rna = new RNA(qLayers, qNeuronsIn, qNeuronsOut, qNeuronsHidden, qtdW, txOfLearn);
+        new LoadFile().saveWeigths(rna, "src/main/java/dados/pesosIniciais.data");
+        return rna;
     }
 
     public void treinar(RNA rna) {
@@ -43,6 +47,7 @@ public class Menu {
         TreinaRNA treinador = new TreinaRNA();
         String path = "src/main/java/dados/amostras.data";
         List<Input> lista = new LoadFile().load(path, 6, 289);
+        lista.forEach(action -> action.toString());
 
         treinador.setData(lista);
         System.out.println("Escolha uma um numero de epocas: ");

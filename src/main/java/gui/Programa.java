@@ -1,5 +1,6 @@
 package gui;
 
+import dados.LoadFile;
 import ia.RNA;
 import java.util.Scanner;
 
@@ -22,12 +23,14 @@ public class Programa {
             System.err.println("3 - Classificar dado");
             System.out.println("4 - Classificar Conjunto de Dados");
             System.out.println("5 - Visualizar RNA");
+            System.out.println("6 - Visualizar Pesos Finais e Iniciais da RNA");
             System.out.println("0 - Encerrar");
             opcao = leitor.nextInt();
 
             switch (opcao) {
                 case 1:
                     rna = menu.criarRNA();
+                    new LoadFile().saveWeigths(rna, "src/main/java/dados/pesosIniciais.data");
                     rnaCriada = true;
                     break;
                 case 2:
@@ -59,6 +62,13 @@ public class Programa {
                         rna.printNet();
                     }
                     break;
+                case 6:
+                    System.out.println("::::::::::::::::::: Pesos Antigos ::::::::::::::::::");
+                    new LoadFile().showWeights("src/main/java/dados/pesosIniciais.data");
+                    System.out.println("::::::::::::::::::: Pesos Atuais :::::::::::::::::::");
+                    rna.printNet();
+
+                    ;
 
                 default:
                     System.out.println(":::::::::::::Encerrando sofIA:::::::::");
