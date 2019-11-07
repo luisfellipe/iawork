@@ -32,7 +32,7 @@ public class RNA {
         //cria camadas ocultas se tiver considera-se a primeira camada como uma camada oculta
         for (int i = 0; i < qLayers - 2; i++) {
             l = new ArrayList<>();
-            for (int j = 0; j < qnIn; j++) {
+            for (int j = 0; j < qnOut * 2; j++) {
                 l.add(new Neuronio(qnIn));
             }
             MLP.add(l);
@@ -52,50 +52,37 @@ public class RNA {
      * percurso inverso da classificação ajustando os pesos.
      *
      * @param Input entrada: tem os dados para classificar e tambem a resposta
-     * @amostra[saida]: possui a saida desejada, não faz parte do processo da
-     * rede
-     * @saida: posicao da saida desejada
-     * @y: saida obtida na RNA
-     * @amostra[]: parametros para classificação
-     * @saida: saida esperada
+     * esperada
      */
-    public void backPropagation(Input entrada) {
+    public void backPropagation(double saidaEsperada) {
         /**
          * @gd: Gradiente Descendente
          * @y: saida do neuronio
          * @saidaEsperada: resultado esperado da entrada
-         * @gdSoma = Soma[gd(j) * w(ij)]
+         * @gdSoma = Soma[gd(j) * w(ij)], w(ij) pesos do neuronio j
          */
-        double[] amostra = entrada.getInputs();
-        double saidaEsperada = entrada.getSaida();
-        double[] W = null; // vetor de pesos
-        double gd = 0, y = 0.0, gdSoma = 0.0;
 
+        double[] W = null; // vetor de pesos
+        double gd = 0, gdSoma = 0, y = 0.0;
         boolean isOut = true;
-        Collections.reverse(MLP);// inverte ordem da MLP para começar da camada de saida
-        int qtdW = MLP.size();//tamanho da camada anterior
-        for (List<Neuronio> layer : MLP) {
-            for (Neuronio neuronio : layer) {
-                y = neuronio.getLastOutput();//ultimo sinal do neuronio
-                if (!isOut) {
-                    gd = y * (1 - y) * gdSoma;
+
+        int layer = 1, neuronio, peso;
+        for (layer = MLP.size(); layer > 0; layer--) {
+            for (neuronio = 0; neuronio < 10; neuronio++) {
+                y = MLP.get(layer).get(neuronio).getLastOutput();
+                if (isOut) {
+                    gdSoma += y * (1 - y) * MLP.get(layer - 1).get(neuronio).getGD();
                 } else {
                     gd = y * (1 - y) * (saidaEsperada - y);
+                    MLP.get(layer).get(neuronio).setGD(gd);//guarda gradiente local do neuronio
                 }
-                neuronio.setGD(gd);//gradiente local do neuronio
-                W = neuronio.getPesos();
-                for (int nw = 0; nw < qtdW; nw++) {
-                    W[nw] = W[nw] + (txOfLearn * y * gd);
-                    gdSoma += gd * W[nw];
+                W = MLP.get(layer).get(neuronio).getPesos();
+                for (peso = 0; peso < MLP.get(layer).get(neuronio).getQtdPesos(); peso++) {
+                    W[peso] = W[peso] + (txOfLearn * y * gd);
                 }
             }
-            if (isOut) {//depois que passar pela camada de saida o calculo do gradiene interno muda
-                isOut = false;
-            }
-            qtdW = layer.size();
-            gdSoma = 0.0;
+            isOut = false;//sai da camada de output
         }
-        Collections.reverse(MLP);//volta MLP para sua ordem natural
     }
 
     public double setInput(double entrada[]) {
@@ -113,6 +100,12 @@ public class RNA {
         }
         for (double d : S) {
             u = u + d;
+        }
+
+        if (u < 0.2000) {
+            return 0;
+        } else if (u > 0.8000) {
+            return 1;
         }
 
         return u;
